@@ -1,6 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:portfolio/utils/app_colors.dart';
 import 'package:portfolio/widgets/glass_container.dart';
 import 'package:portfolio/sections/about_section.dart';
@@ -53,17 +53,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      endDrawer: _StyledDrawer(
-        onScrollTo: _scrollTo,
-        keys: {
-          "Home": _homeKey,
-          "About": _aboutKey,
-          "Skills": _skillsKey,
-          "Experience": _experienceKey,
-          "Projects": _flashApiKey,
-          "Contact": _contactKey,
-        },
-      ),
       body: Stack(
         children: [
           const Positioned.fill(child: AnimatedBackground()),
@@ -99,150 +88,94 @@ class _HomePageState extends State<HomePage> {
               onContactTap: () => _scrollTo(_contactKey),
             ),
           ),
+          if (MediaQuery.of(context).size.width < 600)
+            Positioned(
+              right: 0,
+              top: 0,
+              bottom: 0,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    right: 5,
+                  ), // Small gap from edge
+                  child: _MobileNavRail(
+                    onScrollTo: _scrollTo,
+                    keys: {
+                      "Home": _homeKey,
+                      "About": _aboutKey,
+                      "Skills": _skillsKey,
+                      "Experience": _experienceKey,
+                      "Projects": _projectsKey,
+                      "Contact": _contactKey,
+                    },
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
   }
 }
 
-class _StyledDrawer extends StatelessWidget {
+class _MobileNavRail extends StatelessWidget {
   final Function(GlobalKey) onScrollTo;
   final Map<String, GlobalKey> keys;
 
-  const _StyledDrawer({required this.onScrollTo, required this.keys});
+  const _MobileNavRail({required this.onScrollTo, required this.keys});
 
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      backgroundColor: Colors.transparent,
-      width: MediaQuery.of(context).size.width * 0.85,
-      child: GlassContainer(
-        borderRadius: const BorderRadius.horizontal(left: Radius.circular(30)),
-        color: AppColors.background,
-        opacity: 0.8, // Slightly more opaque to ensure contrast
-        blur: 20,
-        border: Border(
-          left: BorderSide(color: AppColors.secondary.withOpacity(0.3)),
-          top: BorderSide(color: Colors.white.withOpacity(0.1)),
-          bottom: BorderSide(color: Colors.white.withOpacity(0.1)),
-        ),
-        child: Column(
-          children: [
-            // Close Button
-            Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 50, 20, 0),
-                child: IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(
-                    Icons.close,
-                    color: AppColors.secondary,
-                    size: 30,
-                  ),
-                ),
-              ),
-            ),
-
-            // Menu Items
-            Expanded(
-              child: Center(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: keys.entries.map((entry) {
-                      int index = keys.keys.toList().indexOf(entry.key);
-                      return FadeInRight(
-                        delay: Duration(milliseconds: 100 + (index * 100)),
-                        child: _DrawerItem(
-                          number: "0${index + 1}.",
-                          title: entry.key,
-                          onTap: () {
-                            Navigator.pop(context);
-                            onScrollTo(entry.value);
-                          },
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ),
-            ),
-
-            // Footer
-            FadeInUp(
-              delay: const Duration(milliseconds: 800),
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 40),
-                child: Text(
-                  "© 2026 Prem Kumar Kota",
-                  style: GoogleFonts.firaCode(
-                    color: AppColors.textSecondary.withOpacity(0.5),
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  IconData _getIcon(String key) {
+    switch (key) {
+      case "Home":
+        return Icons.home_outlined;
+      case "About":
+        return Icons.person_outline;
+      case "Skills":
+        return Icons.folder_open_outlined;
+      case "Experience":
+        return Icons.work_outline;
+      case "Projects":
+        return Icons.emoji_events_outlined;
+      case "Contact":
+        return Icons.mail_outline;
+      default:
+        return Icons.circle_outlined;
+    }
   }
-}
-
-class _DrawerItem extends StatefulWidget {
-  final String number;
-  final String title;
-  final VoidCallback onTap;
-
-  const _DrawerItem({
-    required this.number,
-    required this.title,
-    required this.onTap,
-  });
-
-  @override
-  State<_DrawerItem> createState() => _DrawerItemState();
-}
-
-class _DrawerItemState extends State<_DrawerItem> {
-  bool _isHovered = false;
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: Container(
-          width: double.infinity,
-          color: Colors.transparent,
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                widget.number,
-                style: GoogleFonts.firaCode(
-                  color: AppColors.secondary,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
+    return GlassContainer(
+      borderRadius: BorderRadius.circular(50),
+      color: AppColors.background,
+      opacity: 0.1,
+      blur: 20,
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: keys.entries.map((entry) {
+          int index = keys.keys.toList().indexOf(entry.key);
+          return FadeInRight(
+            delay: Duration(milliseconds: 100 + (index * 100)),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: IconButton(
+                onPressed: () => onScrollTo(entry.value),
+                icon: Icon(
+                  _getIcon(entry.key),
+                  color: AppColors.textSecondary,
+                  size: 20,
+                ),
+                tooltip: entry.key,
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  hoverColor: AppColors.secondary.withOpacity(0.2),
+                  highlightColor: AppColors.secondary.withOpacity(0.1),
                 ),
               ),
-              const SizedBox(width: 20),
-              Text(
-                widget.title,
-                style: GoogleFonts.inter(
-                  color: _isHovered ? Colors.white : AppColors.textPrimary,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 1,
-                ),
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        }).toList(),
       ),
     );
   }

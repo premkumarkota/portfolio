@@ -144,44 +144,55 @@ class _ProfileImageState extends State<_ProfileImage> {
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
-      child: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 350, maxHeight: 400),
-          child: AspectRatio(
-            aspectRatio: 0.85,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                // Back Decoration (Outline)
-                AnimatedPositioned(
-                  duration: const Duration(milliseconds: 300),
-                  top: _isHovered ? 20 : 0,
-                  right: _isHovered ? 20 : 0,
-                  bottom: _isHovered ? -20 : 0,
-                  left: _isHovered ? -20 : 0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.secondary, width: 2),
+      child: GestureDetector(
+        onTap: () {
+          setState(() => _isHovered = true);
+          Future.delayed(const Duration(milliseconds: 1500), () {
+            if (mounted) setState(() => _isHovered = false);
+          });
+        },
+        child: Center(
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 350, maxHeight: 400),
+            child: AspectRatio(
+              aspectRatio: 0.85,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  // Back Decoration (Outline)
+                  AnimatedPositioned(
+                    duration: const Duration(milliseconds: 300),
+                    top: _isHovered ? 20 : 0,
+                    right: _isHovered ? 20 : 0,
+                    bottom: _isHovered ? -20 : 0,
+                    left: _isHovered ? -20 : 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: AppColors.secondary,
+                          width: 2,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                // Front Image (Glass Container placeholder)
-                GlassContainer(
-                  width: double.infinity,
-                  height: double.infinity,
-                  borderRadius: BorderRadius.circular(20),
-                  opacity: 0.1,
-                  color: AppColors.cardColor,
-                  child: Center(
-                    child: Icon(
-                      Icons.person_outline,
-                      size: 100,
-                      color: AppColors.textSecondary.withOpacity(0.5),
+                  // Front Image (Glass Container placeholder)
+                  GlassContainer(
+                    width: double.infinity,
+                    height: double.infinity,
+                    borderRadius: BorderRadius.circular(20),
+                    opacity: 0.1,
+                    color: AppColors.cardColor,
+                    child: Center(
+                      child: Icon(
+                        Icons.person_outline,
+                        size: 100,
+                        color: AppColors.textSecondary.withOpacity(0.5),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

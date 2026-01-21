@@ -126,111 +126,122 @@ class _ExperienceCardState extends State<_ExperienceCard> {
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        transform: Matrix4.identity()..translate(_isHovered ? 10.0 : 0.0, 0.0),
-        child: GlassContainer(
-          borderRadius: BorderRadius.circular(16),
-          padding: EdgeInsets.all(widget.isMobile ? 20 : 30),
-          opacity: _isHovered ? 0.08 : 0.03,
-          border: Border.all(
-            color: _isHovered
-                ? AppColors.secondary.withOpacity(0.5)
-                : Colors.transparent,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (widget.isMobile)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.exp.role,
-                      style: GoogleFonts.inter(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: _isHovered
-                            ? AppColors.secondary
-                            : AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      widget.exp.duration,
-                      style: GoogleFonts.firaCode(
-                        fontSize: 14,
-                        color: AppColors.secondary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                )
-              else
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Text(
+      child: GestureDetector(
+        onTap: () {
+          if (widget.isMobile) {
+            setState(() => _isHovered = true);
+            Future.delayed(const Duration(milliseconds: 1500), () {
+              if (mounted) setState(() => _isHovered = false);
+            });
+          }
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          transform: Matrix4.identity()
+            ..translate(_isHovered ? 10.0 : 0.0, 0.0),
+          child: GlassContainer(
+            borderRadius: BorderRadius.circular(16),
+            padding: EdgeInsets.all(widget.isMobile ? 20 : 30),
+            opacity: _isHovered ? 0.08 : 0.03,
+            border: Border.all(
+              color: _isHovered
+                  ? AppColors.secondary.withOpacity(0.5)
+                  : Colors.transparent,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (widget.isMobile)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
                         widget.exp.role,
                         style: GoogleFonts.inter(
-                          fontSize: 22,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: _isHovered
                               ? AppColors.secondary
                               : AppColors.textPrimary,
                         ),
                       ),
-                    ),
-                    Text(
-                      widget.exp.duration,
-                      style: GoogleFonts.firaCode(
-                        fontSize: 14,
-                        color: AppColors.secondary,
-                        fontWeight: FontWeight.bold,
+                      const SizedBox(height: 8),
+                      Text(
+                        widget.exp.duration,
+                        style: GoogleFonts.firaCode(
+                          fontSize: 14,
+                          color: AppColors.secondary,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              const SizedBox(height: 8),
-              Text(
-                "@ ${widget.exp.company}",
-                style: GoogleFonts.firaCode(
-                  fontSize: 14,
-                  color: AppColors.secondary,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Column(
-                children: widget.exp.points.map((point) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 12.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "▹ ",
-                          style: TextStyle(
-                            color: AppColors.secondary,
-                            fontSize: 14,
+                    ],
+                  )
+                else
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          widget.exp.role,
+                          style: GoogleFonts.inter(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: _isHovered
+                                ? AppColors.secondary
+                                : AppColors.textPrimary,
                           ),
                         ),
-                        Expanded(
-                          child: Text(
-                            point,
-                            style: GoogleFonts.inter(
-                              color: AppColors.textSecondary,
-                              height: 1.5,
-                              fontSize: 15,
+                      ),
+                      Text(
+                        widget.exp.duration,
+                        style: GoogleFonts.firaCode(
+                          fontSize: 14,
+                          color: AppColors.secondary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                const SizedBox(height: 8),
+                Text(
+                  "@ ${widget.exp.company}",
+                  style: GoogleFonts.firaCode(
+                    fontSize: 14,
+                    color: AppColors.secondary,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Column(
+                  children: widget.exp.points.map((point) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "▹ ",
+                            style: TextStyle(
+                              color: AppColors.secondary,
+                              fontSize: 14,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              ),
-            ],
+                          Expanded(
+                            child: Text(
+                              point,
+                              style: GoogleFonts.inter(
+                                color: AppColors.textSecondary,
+                                height: 1.5,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -134,149 +134,162 @@ class _ProjectCardState extends State<_ProjectCard> {
     return MouseRegion(
       onEnter: (_) => setState(() => isHovered = true),
       onExit: (_) => setState(() => isHovered = false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        transform: Matrix4.identity()..translate(0.0, isHovered ? -10.0 : 0.0),
-        child: GlassContainer(
-          borderRadius: BorderRadius.circular(24),
-          color: AppColors.surface, // Use consistent surface color
-          opacity: 0.1, // Subtle glass
-          padding: const EdgeInsets.all(0),
-          border: Border.all(
-            color: isHovered
-                ? AppColors.secondary.withOpacity(0.5)
-                : AppColors.glassBorder,
-            width: 1,
-          ),
-          child: Stack(
-            children: [
-              // 1. Watermark Number
-              Positioned(
-                right: 20,
-                top: 10,
-                child: Opacity(
-                  opacity: isHovered ? 0.2 : 0.05,
-                  child: Text(
-                    number,
-                    style: TextStyle(
-                      fontFamily: 'Inter', // Or standard sans
-                      fontSize: 120,
-                      fontWeight: FontWeight.w900,
-                      color: AppColors.secondary,
-                      height: 1.0,
-                    ),
-                  ),
-                ),
-              ),
-
-              // 2. Content
-              Padding(
-                padding: const EdgeInsets.all(32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Icon Header
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: AppColors.secondary.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(
-                            widget.project.icon,
-                            color: AppColors.secondary,
-                            size: 24,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            if (widget.project.secondaryLink != null)
-                              _LinkBtn(
-                                icon: FontAwesomeIcons.github,
-                                url: widget.project.secondaryLink!,
-                              ),
-                            const SizedBox(width: 10),
-                            if (widget.project.link != null)
-                              _LinkBtn(
-                                icon: Icons.open_in_new,
-                                url: widget.project.link!,
-                              ),
-                          ],
-                        ),
-                      ],
-                    ),
-
-                    if (widget.isMobile)
-                      const SizedBox(height: 20)
-                    else
-                      const Spacer(),
-
-                    // Title
-                    Text(
-                      widget.project.title,
-                      style: Theme.of(context).textTheme.headlineSmall
-                          ?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: isHovered
-                                ? AppColors.secondary
-                                : AppColors.textPrimary,
-                          ),
-                    ),
-                    const SizedBox(height: 12),
-
-                    // Description
-                    Text(
-                      widget.project.description,
-                      maxLines: 4,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.textSecondary,
-                        height: 1.5,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Tech Stack
-                    Wrap(
-                      spacing: 12,
-                      runSpacing: 8,
-                      children: widget.project.tools.split(',').map((tool) {
-                        return Text(
-                          tool.trim(),
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(
-                                color: AppColors.textSecondary.withOpacity(0.8),
-                                fontFamily:
-                                    'FiraCode', // Monospace if available
-                                fontWeight: FontWeight.w500,
-                              ),
-                        );
-                      }).toList(),
-                    ),
-                  ],
-                ),
-              ),
-
-              // 3. Hover Glow at Bottom
-              if (isHovered)
+      child: GestureDetector(
+        onTap: () {
+          if (widget.isMobile) {
+            setState(() => isHovered = true);
+            Future.delayed(const Duration(milliseconds: 1500), () {
+              if (mounted) setState(() => isHovered = false);
+            });
+          }
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          transform: Matrix4.identity()
+            ..translate(0.0, isHovered ? -10.0 : 0.0),
+          child: GlassContainer(
+            borderRadius: BorderRadius.circular(24),
+            color: AppColors.surface, // Use consistent surface color
+            opacity: 0.1, // Subtle glass
+            padding: const EdgeInsets.all(0),
+            border: Border.all(
+              color: isHovered
+                  ? AppColors.secondary.withOpacity(0.5)
+                  : AppColors.glassBorder,
+              width: 1,
+            ),
+            child: Stack(
+              children: [
+                // 1. Watermark Number
                 Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  height: 4,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: AppColors.primaryGradient,
-                      borderRadius: const BorderRadius.vertical(
-                        bottom: Radius.circular(24),
+                  right: 20,
+                  top: 10,
+                  child: Opacity(
+                    opacity: isHovered ? 0.2 : 0.05,
+                    child: Text(
+                      number,
+                      style: TextStyle(
+                        fontFamily: 'Inter', // Or standard sans
+                        fontSize: 120,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.secondary,
+                        height: 1.0,
                       ),
                     ),
                   ),
                 ),
-            ],
+
+                // 2. Content
+                Padding(
+                  padding: const EdgeInsets.all(32),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Icon Header
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: AppColors.secondary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(
+                              widget.project.icon,
+                              color: AppColors.secondary,
+                              size: 24,
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              if (widget.project.secondaryLink != null)
+                                _LinkBtn(
+                                  icon: FontAwesomeIcons.github,
+                                  url: widget.project.secondaryLink!,
+                                ),
+                              const SizedBox(width: 10),
+                              if (widget.project.link != null)
+                                _LinkBtn(
+                                  icon: Icons.open_in_new,
+                                  url: widget.project.link!,
+                                ),
+                            ],
+                          ),
+                        ],
+                      ),
+
+                      if (widget.isMobile)
+                        const SizedBox(height: 20)
+                      else
+                        const Spacer(),
+
+                      // Title
+                      Text(
+                        widget.project.title,
+                        style: Theme.of(context).textTheme.headlineSmall
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: isHovered
+                                  ? AppColors.secondary
+                                  : AppColors.textPrimary,
+                            ),
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Description
+                      Text(
+                        widget.project.description,
+                        maxLines: 4,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AppColors.textSecondary,
+                          height: 1.5,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Tech Stack
+                      Wrap(
+                        spacing: 12,
+                        runSpacing: 8,
+                        children: widget.project.tools.split(',').map((tool) {
+                          return Text(
+                            tool.trim(),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: AppColors.textSecondary.withOpacity(
+                                    0.8,
+                                  ),
+                                  fontFamily:
+                                      'FiraCode', // Monospace if available
+                                  fontWeight: FontWeight.w500,
+                                ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // 3. Hover Glow at Bottom
+                if (isHovered)
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: 4,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: AppColors.primaryGradient,
+                        borderRadius: const BorderRadius.vertical(
+                          bottom: Radius.circular(24),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
