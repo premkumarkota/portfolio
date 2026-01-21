@@ -1,29 +1,40 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const Color primary = Color(0xFF304263);
-  static const Color secondary = Color(0xFF00C9FF); // Vibrant Cyan for accents
-  static const Color background = Color(0xFF0F172A); // Slate 900
-  static const Color cardColor = Color(0xFF1E293B); // Slate 800
-  static const Color textPrimary = Color(0xFFF1F5F9); // Slate 100
-  static const Color textSecondary = Color(0xFF94A3B8); // Slate 400
-  static const Color accent = Color(0xFF38BDF8); // Sky 400
+  // Premium Dark Theme
+  static const Color background = Color(0xFF030303); // Deepest Black
+  static const Color surface = Color(0xFF121212); // Slightly lighter for cards
+  static const Color primary = Color(0xFFFFFFFF); // Pure White for primary text
+  static const Color secondary = Color(0xFF8B5CF6); // Electric Violet
+  static const Color accent = Color(0xFF00F0FF); // Cyan Neon
+
+  static const Color textPrimary = Color(0xFFFFFFFF);
+  static const Color textSecondary = Color(0xFFA1A1AA); // Zinc 400
+  static const Color textTertiary = Color(0xFF52525B); // Zinc 600
+
+  // Glassmorphism
+  static const Color glassBorder = Color(0xFF27272A); // Zinc 800
+  static const Color glassBackground = Color(0x1AFFFFFF); // 10% White
 
   // Gradients
   static const LinearGradient primaryGradient = LinearGradient(
-    colors: [Color(0xFF00C9FF), Color(0xFF304263)],
+    colors: [Color(0xFF8B5CF6), Color(0xFF00F0FF)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  static const LinearGradient backgroundGradient = LinearGradient(
-    colors: [Color(0xFF0F172A), Color(0xFF1E293B)],
+  static const LinearGradient darkGradient = LinearGradient(
+    colors: [Color(0xFF030303), Color(0xFF121212)],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );
+  // Backwards compatibility / Mapped colors
+  static const Color cardColor = surface;
+
+  static const LinearGradient backgroundGradient = darkGradient;
 
   static const LinearGradient cardGradient = LinearGradient(
-    colors: [Color(0xFF1E293B), Color(0xFF253347)],
+    colors: [surface, background],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );

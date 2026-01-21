@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
           surface: AppColors.cardColor,
           background: AppColors.background,
         ),
-        textTheme: GoogleFonts.interTextTheme(
+        textTheme: GoogleFonts.outfitTextTheme(
           Theme.of(context).textTheme.apply(
             bodyColor: AppColors.textPrimary,
             displayColor: AppColors.textPrimary,

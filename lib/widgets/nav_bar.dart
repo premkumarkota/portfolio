@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:portfolio/utils/app_colors.dart';
+import 'package:portfolio/widgets/glass_container.dart';
 
 class NavBar extends StatelessWidget {
   final VoidCallback onHomeTap;
@@ -22,39 +23,47 @@ class NavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-      color: AppColors.background.withOpacity(0.9),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            "< Prem />",
-            style: GoogleFonts.firaCode(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: AppColors.secondary,
+    bool isDesktop = MediaQuery.of(context).size.width > 800;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: GlassContainer(
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
+            borderRadius: BorderRadius.circular(100),
+            opacity: 0.1,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "PREM KOTA",
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2.0,
+                    color: AppColors.primary,
+                  ),
+                ),
+                if (isDesktop)
+                  Row(
+                    children: [
+                      _NavButton("Work", onProjectsTap),
+                      _NavButton("About", onAboutTap),
+                      _NavButton("Contact", onContactTap),
+                    ],
+                  )
+                else
+                  IconButton(
+                    icon: const Icon(Icons.menu, color: Colors.white),
+                    onPressed: () {
+                      Scaffold.of(context).openEndDrawer();
+                    },
+                  ),
+              ],
             ),
           ),
-          if (MediaQuery.of(context).size.width > 800)
-            Row(
-              children: [
-                _NavButton("Home", onHomeTap),
-                _NavButton("About", onAboutTap),
-                _NavButton("Skills", onSkillsTap),
-                _NavButton("Experience", onExperienceTap),
-                _NavButton("Projects", onProjectsTap),
-                _NavButton("Contact", onContactTap),
-              ],
-            )
-          else
-            IconButton(
-              icon: const Icon(Icons.menu, color: Colors.white),
-              onPressed: () {
-                Scaffold.of(context).openEndDrawer();
-              },
-            ),
-        ],
+        ),
       ),
     );
   }
@@ -74,8 +83,8 @@ class _NavButton extends StatelessWidget {
         onPressed: onTap,
         child: Text(
           title,
-          style: GoogleFonts.inter(
-            color: Colors.white,
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+            color: AppColors.primary,
             fontWeight: FontWeight.w500,
           ),
         ),

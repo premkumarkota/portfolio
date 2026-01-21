@@ -1,100 +1,206 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio/utils/app_colors.dart';
-import 'package:portfolio/utils/constants.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:portfolio/widgets/glass_container.dart';
 
 class HomeSection extends StatelessWidget {
-  const HomeSection({super.key});
+  final VoidCallback? onWorkTap;
+  final VoidCallback? onContactTap;
+
+  const HomeSection({super.key, this.onWorkTap, this.onContactTap});
 
   @override
   Widget build(BuildContext context) {
+    // Premium centralized layout
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 80),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          FadeInDown(
-            child: Text(
-              "Hello, I'm",
-              style: GoogleFonts.inter(
-                fontSize: 20,
-                color: AppColors.secondary,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          FadeInLeft(
-            child: Text(
-              AppConstants.name,
-              style: GoogleFonts.inter(
-                fontSize: 60,
-                fontWeight: FontWeight.bold,
-                height: 1.1,
-                color: AppColors.textPrimary,
-              ),
-            ),
-          ),
-          FadeInRight(
-            child: Text(
-              AppConstants.designation,
-              style: GoogleFonts.inter(
-                fontSize: 50,
-                fontWeight: FontWeight.bold,
-                height: 1.1,
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ),
-          const SizedBox(height: 30),
-          FadeInUp(
-            child: SizedBox(
-              width: 600,
-              child: Text(
-                AppConstants.about,
-                style: GoogleFonts.inter(
-                  fontSize: 18,
-                  height: 1.6,
-                  color: AppColors.textSecondary,
+      constraints: BoxConstraints(
+        minHeight: MediaQuery.of(context).size.height * 0.8,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 60),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Floating 'pill' label
+            FadeInDown(
+              child: GlassContainer(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
                 ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 40),
-          FadeInUp(
-            delay: const Duration(milliseconds: 200),
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 30,
-                    vertical: 20,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
+                borderRadius: BorderRadius.circular(100),
+                opacity: 0.1,
                 child: Text(
-                  "Check out my work",
-                  style: GoogleFonts.firaCode(
-                    color: Colors.white,
-                    fontSize: 16,
+                  "👋 HELLO, I AM PREM",
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: AppColors.secondary,
+                    letterSpacing: 3,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
             ),
+            const SizedBox(height: 40),
+
+            // Massive Typography
+            FadeInUp(
+              duration: const Duration(milliseconds: 1000),
+              child: Text(
+                "BUILDING DIGITAL\nEXPERIENCES",
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                  fontSize: _getResponsiveSize(context, 80, 48),
+                  fontWeight: FontWeight.w900,
+                  height: 1.0,
+                  letterSpacing: -2,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+            // Subtitle / Typing
+            FadeInUp(
+              delay: const Duration(milliseconds: 300),
+              child: SizedBox(
+                height: 40,
+                child: AnimatedTextKit(
+                  repeatForever: true,
+                  animatedTexts: [
+                    TypewriterAnimatedText(
+                      'Mobile • Web • Desktop',
+                      textStyle: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(
+                            color: AppColors.textSecondary,
+                            letterSpacing: 2,
+                          ),
+                      speed: const Duration(milliseconds: 100),
+                    ),
+                    TypewriterAnimatedText(
+                      'Flutter Engineer',
+                      textStyle: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(
+                            color: AppColors.textSecondary,
+                            letterSpacing: 2,
+                          ),
+                      speed: const Duration(milliseconds: 100),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 60),
+
+            // Buttons
+            FadeInUp(
+              delay: const Duration(milliseconds: 500),
+              child: Wrap(
+                spacing: 20,
+                runSpacing: 20,
+                alignment: WrapAlignment.center,
+                children: [
+                  _PrimaryButton(onTap: onWorkTap),
+                  _SecondaryButton(onTap: onContactTap),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  double _getResponsiveSize(
+    BuildContext context,
+    double desktop,
+    double mobile,
+  ) {
+    return MediaQuery.of(context).size.width > 800 ? desktop : mobile;
+  }
+}
+
+class _PrimaryButton extends StatefulWidget {
+  final VoidCallback? onTap;
+
+  const _PrimaryButton({this.onTap});
+
+  @override
+  State<_PrimaryButton> createState() => _PrimaryButtonState();
+}
+
+class _PrimaryButtonState extends State<_PrimaryButton> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        transform: Matrix4.identity()..scale(_isHovered ? 1.05 : 1.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(100),
+          gradient: AppColors.primaryGradient,
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.secondary.withOpacity(0.4),
+              blurRadius: _isHovered ? 30 : 10,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: ElevatedButton(
+          onPressed: widget.onTap,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(100),
+            ),
           ),
-        ],
+          child: Text(
+            "EXPLORE WORK",
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.5,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SecondaryButton extends StatelessWidget {
+  final VoidCallback? onTap;
+
+  const _SecondaryButton({this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassContainer(
+      opacity: 0.1,
+      borderRadius: BorderRadius.circular(100),
+      child: OutlinedButton(
+        onPressed: onTap,
+        style: OutlinedButton.styleFrom(
+          side: BorderSide.none,
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
+        ),
+        child: const Text(
+          "CONTACT ME",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.5,
+          ),
+        ),
       ),
     );
   }

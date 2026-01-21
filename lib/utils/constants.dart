@@ -62,9 +62,10 @@ class AppConstants {
     "RESTful APIs",
     "Firebase",
     "Git",
-    "Linux",
     "VS Code",
-    "Provider",
+    "Git Lab",
+    "CI/CD",
+    "",
   ];
 
   static const List<ExperienceModel> experiences = [

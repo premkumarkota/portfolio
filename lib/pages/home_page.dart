@@ -6,8 +6,9 @@ import 'package:portfolio/sections/flash_api_section.dart';
 import 'package:portfolio/sections/home_section.dart';
 import 'package:portfolio/sections/projects_section.dart';
 import 'package:portfolio/sections/skills_section.dart';
-import 'package:portfolio/utils/app_colors.dart';
 import 'package:portfolio/widgets/nav_bar.dart';
+import 'package:portfolio/widgets/animated_background.dart';
+import 'package:portfolio/utils/video_controller_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,6 +18,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    // Preload the large video immediately
+    VideoControllerService().preload(
+      'assets/videos/flashapi_demo.mp4',
+      isAsset: true,
+    );
+  }
+
   final ScrollController _scrollController = ScrollController();
 
   final GlobalKey _homeKey = GlobalKey();
@@ -90,17 +101,16 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Stack(
         children: [
-          Container(
-            decoration: const BoxDecoration(
-              gradient: AppColors.backgroundGradient,
-            ),
-          ),
+          const Positioned.fill(child: AnimatedBackground()),
           SingleChildScrollView(
             controller: _scrollController,
             child: Column(
               children: [
                 SizedBox(key: _homeKey, height: 100), // Offset for navbar
-                const HomeSection(),
+                HomeSection(
+                  onWorkTap: () => _scrollTo(_flashApiKey),
+                  onContactTap: () => _scrollTo(_contactKey),
+                ),
                 SizedBox(key: _aboutKey, child: const AboutSection()),
                 SizedBox(key: _skillsKey, child: const SkillsSection()),
                 SizedBox(key: _experienceKey, child: const ExperienceSection()),

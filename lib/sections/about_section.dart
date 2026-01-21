@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio/utils/app_colors.dart';
 import 'package:portfolio/utils/constants.dart';
+import 'package:portfolio/widgets/glass_container.dart';
+import 'package:animate_do/animate_do.dart';
 
 class AboutSection extends StatelessWidget {
   const AboutSection({super.key});
@@ -9,53 +10,100 @@ class AboutSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 900;
+
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 80),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text(
-                "00. About Me",
-                style: GoogleFonts.firaCode(
-                  fontSize: 24,
-                  color: AppColors.secondary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(width: 20),
-              const Expanded(
-                child: Divider(color: AppColors.cardColor, thickness: 1),
-              ),
-            ],
-          ),
-          const SizedBox(height: 40),
-          isDesktop
-              ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(flex: 3, child: _AboutText()),
-                    const SizedBox(width: 40),
-                    const Expanded(flex: 2, child: _ProfileImage()),
-                  ],
-                )
-              : Column(
-                  children: [
-                    const _ProfileImage(),
-                    const SizedBox(height: 40),
-                    const _AboutText(),
-                  ],
-                ),
-        ],
-      ),
+      constraints: const BoxConstraints(maxWidth: 1200),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 80),
+      child: isDesktop
+          ? const Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(flex: 5, child: _AboutContent()),
+                SizedBox(width: 60),
+                Expanded(flex: 4, child: _ProfileImage()),
+              ],
+            )
+          : const Column(
+              children: [
+                _ProfileImage(),
+                SizedBox(height: 50),
+                _AboutContent(),
+              ],
+            ),
     );
   }
 }
 
-class _AboutText extends StatelessWidget {
-  const _AboutText();
+class _AboutContent extends StatelessWidget {
+  const _AboutContent();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Section Title
+        FadeInDown(
+          child: Text(
+            "ABOUT ME",
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: AppColors.accent,
+              letterSpacing: 3,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+
+        // Main Headline
+        FadeInLeft(
+          child: Text(
+            "Transforming ideas into digital reality.",
+            style: Theme.of(context).textTheme.displaySmall?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+              height: 1.2,
+            ),
+          ),
+        ),
+        const SizedBox(height: 30),
+
+        // Bio Text
+        FadeInUp(
+          child: Text(
+            AppConstants.about,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: AppColors.textSecondary,
+              height: 1.8,
+              fontSize: 18,
+            ),
+          ),
+        ),
+        const SizedBox(height: 40),
+
+        // Stats Grid
+        FadeInUp(
+          delay: const Duration(milliseconds: 200),
+          child: const Wrap(
+            spacing: 30,
+            runSpacing: 20,
+            children: [
+              _StatItem(value: "2+", label: "Years Exp."),
+              _StatItem(value: "10+", label: "Projects"),
+              _StatItem(value: "5+", label: "Clients"),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _StatItem extends StatelessWidget {
+  final String value;
+  final String label;
+
+  const _StatItem({required this.value, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -63,70 +111,78 @@ class _AboutText extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          AppConstants.about,
-          style: GoogleFonts.inter(
-            fontSize: 18,
-            height: 1.6,
-            color: AppColors.textSecondary,
+          value,
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+            color: AppColors.secondary,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 4),
         Text(
-          "Here are a few technologies I've been working with recently:",
-          style: GoogleFonts.inter(
-            fontSize: 16,
-            color: AppColors.textSecondary,
-          ),
-        ),
-        const SizedBox(height: 20),
-        Wrap(
-          spacing: 20,
-          runSpacing: 10,
-          children: AppConstants.skills
-              .take(6)
-              .map(
-                (s) => Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.play_arrow,
-                      size: 12,
-                      color: AppColors.secondary,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      s,
-                      style: GoogleFonts.firaCode(
-                        fontSize: 14,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-              .toList(),
+          label,
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
         ),
       ],
     );
   }
 }
 
-class _ProfileImage extends StatelessWidget {
+class _ProfileImage extends StatefulWidget {
   const _ProfileImage();
 
   @override
+  State<_ProfileImage> createState() => _ProfileImageState();
+}
+
+class _ProfileImageState extends State<_ProfileImage> {
+  bool _isHovered = false;
+
+  @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        width: 300,
-        height: 300,
-        decoration: BoxDecoration(
-          color: AppColors.secondary.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.secondary),
-        ),
-        child: const Center(
-          child: Icon(Icons.person, size: 100, color: AppColors.secondary),
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 350, maxHeight: 400),
+          child: AspectRatio(
+            aspectRatio: 0.85,
+            child: Stack(
+              children: [
+                // Back Decoration (Outline)
+                AnimatedPositioned(
+                  duration: const Duration(milliseconds: 300),
+                  top: _isHovered ? 20 : 0,
+                  right: _isHovered ? 20 : 0,
+                  bottom: _isHovered ? -20 : 0,
+                  left: _isHovered ? -20 : 0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: AppColors.secondary, width: 2),
+                    ),
+                  ),
+                ),
+                // Front Image (Glass Container placeholder)
+                GlassContainer(
+                  width: double.infinity,
+                  height: double.infinity,
+                  borderRadius: BorderRadius.circular(20),
+                  opacity: 0.1,
+                  color: AppColors.cardColor,
+                  child: Center(
+                    child: Icon(
+                      Icons.person_outline,
+                      size: 100,
+                      color: AppColors.textSecondary.withOpacity(0.5),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
