@@ -90,7 +90,7 @@ class _AboutContent extends StatelessWidget {
             children: [
               _StatItem(value: "2+", label: "Years Exp."),
               _StatItem(value: "10+", label: "Projects"),
-              _StatItem(value: "5+", label: "Clients"),
+              _StatItem(value: "2+", label: "Clients"),
             ],
           ),
         ),
@@ -150,6 +150,7 @@ class _ProfileImageState extends State<_ProfileImage> {
           child: AspectRatio(
             aspectRatio: 0.85,
             child: Stack(
+              clipBehavior: Clip.none,
               children: [
                 // Back Decoration (Outline)
                 AnimatedPositioned(

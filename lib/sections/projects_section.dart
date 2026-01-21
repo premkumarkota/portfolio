@@ -11,40 +11,46 @@ class ProjectsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 80),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          FadeInDown(
-            child: Text(
-              "SELECTED WORK",
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: AppColors.accent,
-                letterSpacing: 3,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          FadeInLeft(
-            child: Text(
-              "Stuff I've built.",
-              style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-                height: 1.2,
-              ),
-            ),
-          ),
-          const SizedBox(height: 60),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = constraints.maxWidth <= 700;
+        final horizontalPadding = isMobile ? 20.0 : 40.0;
+        final verticalPadding = isMobile ? 40.0 : 80.0;
 
-          LayoutBuilder(
-            builder: (context, constraints) {
-              if (constraints.maxWidth <= 700) {
-                // Mobile: Vertical List (No fixed aspect ratio issues)
-                return Column(
+        return Container(
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: verticalPadding,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              FadeInDown(
+                child: Text(
+                  "SELECTED WORK",
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: AppColors.accent,
+                    letterSpacing: 3,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              FadeInLeft(
+                child: Text(
+                  "Stuff I've built.",
+                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                    height: 1.2,
+                    fontSize: isMobile ? 32 : null,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 60),
+              if (isMobile)
+                Column(
                   children: List.generate(AppConstants.projects.length, (
                     index,
                   ) {
@@ -55,46 +61,50 @@ class ProjectsSection extends StatelessWidget {
                         child: _ProjectCard(
                           project: AppConstants.projects[index],
                           index: index,
+                          isMobile: true,
                         ),
                       ),
                     );
                   }),
-                );
-              }
-
-              // Desktop/Tablet: Grid
-              int crossAxisCount = 2;
-              double childAspectRatio = 0.8;
-
-              if (constraints.maxWidth > 1100) {
-                crossAxisCount = 3;
-                childAspectRatio = 0.9;
-              }
-
-              return GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: AppConstants.projects.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: crossAxisCount,
-                  crossAxisSpacing: 30,
-                  mainAxisSpacing: 30,
-                  childAspectRatio: childAspectRatio,
-                ),
-                itemBuilder: (context, index) {
-                  return FadeInUp(
-                    delay: Duration(milliseconds: index * 100),
-                    child: _ProjectCard(
-                      project: AppConstants.projects[index],
-                      index: index,
-                    ),
-                  );
-                },
-              );
-            },
+                )
+              else
+                _buildGridView(context, constraints),
+            ],
           ),
-        ],
+        );
+      },
+    );
+  }
+
+  Widget _buildGridView(BuildContext context, BoxConstraints constraints) {
+    int crossAxisCount = 2;
+    double childAspectRatio = 0.8;
+
+    if (constraints.maxWidth > 1100) {
+      crossAxisCount = 3;
+      childAspectRatio = 0.9;
+    }
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: AppConstants.projects.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
+        crossAxisSpacing: 30,
+        mainAxisSpacing: 30,
+        childAspectRatio: childAspectRatio,
       ),
+      itemBuilder: (context, index) {
+        return FadeInUp(
+          delay: Duration(milliseconds: index * 100),
+          child: _ProjectCard(
+            project: AppConstants.projects[index],
+            index: index,
+            isMobile: false,
+          ),
+        );
+      },
     );
   }
 }
@@ -102,7 +112,12 @@ class ProjectsSection extends StatelessWidget {
 class _ProjectCard extends StatefulWidget {
   final ProjectModel project;
   final int index;
-  const _ProjectCard({required this.project, required this.index});
+  final bool isMobile;
+  const _ProjectCard({
+    required this.project,
+    required this.index,
+    required this.isMobile,
+  });
 
   @override
   State<_ProjectCard> createState() => _ProjectCardState();
@@ -194,7 +209,10 @@ class _ProjectCardState extends State<_ProjectCard> {
                       ],
                     ),
 
-                    const Spacer(),
+                    if (widget.isMobile)
+                      const SizedBox(height: 20)
+                    else
+                      const Spacer(),
 
                     // Title
                     Text(

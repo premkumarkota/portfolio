@@ -10,83 +10,109 @@ class ExperienceSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 60),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          FadeInDown(
-            child: Row(
-              children: [
-                Text(
-                  "04. Experience",
-                  style: GoogleFonts.firaCode(
-                    fontSize: 24,
-                    color: AppColors.secondary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(width: 20),
-                const Expanded(
-                  child: Divider(color: AppColors.cardColor, thickness: 1),
-                ),
-              ],
-            ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = constraints.maxWidth < 600;
+        final horizontalPadding = isMobile ? 20.0 : 40.0;
+        final verticalPadding = isMobile ? 40.0 : 60.0;
+
+        return Container(
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: verticalPadding,
           ),
-          const SizedBox(height: 50),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: AppConstants.experiences.length,
-            itemBuilder: (context, index) {
-              final exp = AppConstants.experiences[index];
-              return FadeInLeft(
-                delay: Duration(milliseconds: index * 200),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 40),
-                  child: IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Timeline Line
-                        Column(
-                          children: [
-                            Container(
-                              width: 12,
-                              height: 12,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              FadeInDown(
+                child: Row(
+                  children: [
+                    Text(
+                      "04. Experience",
+                      style: GoogleFonts.firaCode(
+                        fontSize: isMobile ? 20 : 24,
+                        color: AppColors.secondary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    const Expanded(
+                      child: Divider(color: AppColors.cardColor, thickness: 1),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 50),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: AppConstants.experiences.length,
+                itemBuilder: (context, index) {
+                  final exp = AppConstants.experiences[index];
+                  // Calculate offsets
+                  final double gap = isMobile ? 15 : 30;
+                  final double circleSize = 12;
+                  final double circleOffset = 0; // Left alignment
+                  final double lineOffset =
+                      circleOffset + (circleSize / 2) - 1; // Center of circle
+                  final double contentLeftPadding = circleSize + gap;
+
+                  return FadeInLeft(
+                    delay: Duration(milliseconds: index * 200),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 40),
+                      child: Stack(
+                        children: [
+                          // 1. Timeline Line (Stretches to height of stack)
+                          Positioned(
+                            top: 0,
+                            bottom: 0,
+                            left: lineOffset,
+                            width: 2,
+                            child: Container(
+                              color: AppColors.secondary.withOpacity(0.3),
+                            ),
+                          ),
+                          // 2. Timeline Circle
+                          Positioned(
+                            top: 0,
+                            left: circleOffset,
+                            child: Container(
+                              width: circleSize,
+                              height: circleSize,
                               decoration: const BoxDecoration(
                                 color: AppColors.secondary,
                                 shape: BoxShape.circle,
                               ),
                             ),
-                            Expanded(
-                              child: Container(
-                                width: 2,
-                                color: AppColors.secondary.withOpacity(0.3),
-                              ),
+                          ),
+                          // 3. Experience Card (Determines Height)
+                          Padding(
+                            padding: EdgeInsets.only(left: contentLeftPadding),
+                            child: _ExperienceCard(
+                              exp: exp,
+                              isMobile: isMobile,
                             ),
-                          ],
-                        ),
-                        const SizedBox(width: 30),
-                        // Experience Card
-                        Expanded(child: _ExperienceCard(exp: exp)),
-                      ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ),
-              );
-            },
+                  );
+                },
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
 
 class _ExperienceCard extends StatefulWidget {
   final ExperienceModel exp;
-  const _ExperienceCard({required this.exp});
+  final bool isMobile;
+  const _ExperienceCard({required this.exp, required this.isMobile});
 
   @override
   State<_ExperienceCard> createState() => _ExperienceCardState();
@@ -105,7 +131,7 @@ class _ExperienceCardState extends State<_ExperienceCard> {
         transform: Matrix4.identity()..translate(_isHovered ? 10.0 : 0.0, 0.0),
         child: GlassContainer(
           borderRadius: BorderRadius.circular(16),
-          padding: const EdgeInsets.all(30),
+          padding: EdgeInsets.all(widget.isMobile ? 20 : 30),
           opacity: _isHovered ? 0.08 : 0.03,
           border: Border.all(
             color: _isHovered
@@ -115,36 +141,62 @@ class _ExperienceCardState extends State<_ExperienceCard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    child: Text(
+              if (widget.isMobile)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
                       widget.exp.role,
                       style: GoogleFonts.inter(
-                        fontSize: 22,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: _isHovered
                             ? AppColors.secondary
                             : AppColors.textPrimary,
                       ),
                     ),
-                  ),
-                  Text(
-                    widget.exp.duration,
-                    style: GoogleFonts.firaCode(
-                      fontSize: 14,
-                      color: AppColors.secondary,
-                      fontWeight: FontWeight.bold,
+                    const SizedBox(height: 8),
+                    Text(
+                      widget.exp.duration,
+                      style: GoogleFonts.firaCode(
+                        fontSize: 14,
+                        color: AppColors.secondary,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                )
+              else
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        widget.exp.role,
+                        style: GoogleFonts.inter(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: _isHovered
+                              ? AppColors.secondary
+                              : AppColors.textPrimary,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      widget.exp.duration,
+                      style: GoogleFonts.firaCode(
+                        fontSize: 14,
+                        color: AppColors.secondary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               const SizedBox(height: 8),
               Text(
                 "@ ${widget.exp.company}",
                 style: GoogleFonts.firaCode(
-                  fontSize: 16,
+                  fontSize: 14,
                   color: AppColors.secondary,
                 ),
               ),
@@ -168,8 +220,8 @@ class _ExperienceCardState extends State<_ExperienceCard> {
                             point,
                             style: GoogleFonts.inter(
                               color: AppColors.textSecondary,
-                              height: 1.6,
-                              fontSize: 16,
+                              height: 1.5,
+                              fontSize: 15,
                             ),
                           ),
                         ),

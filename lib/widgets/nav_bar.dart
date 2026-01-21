@@ -38,7 +38,7 @@ class NavBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "PREM KOTA",
+                  "PREM KUMAR KOTA",
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                     letterSpacing: 2.0,
@@ -52,13 +52,6 @@ class NavBar extends StatelessWidget {
                       _NavButton("About", onAboutTap),
                       _NavButton("Contact", onContactTap),
                     ],
-                  )
-                else
-                  IconButton(
-                    icon: const Icon(Icons.menu, color: Colors.white),
-                    onPressed: () {
-                      Scaffold.of(context).openEndDrawer();
-                    },
                   ),
               ],
             ),

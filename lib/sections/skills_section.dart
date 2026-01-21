@@ -1,7 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:portfolio/utils/app_colors.dart';
-import 'package:portfolio/utils/constants.dart';
+
 import 'package:portfolio/widgets/glass_container.dart';
 
 class SkillsSection extends StatelessWidget {
@@ -11,10 +11,12 @@ class SkillsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     // Categorize skills manually for better presentation (Mock logic)
     // In a real app, this should come from a model.
-    final allSkills = AppConstants.skills;
-    final frontendSkills = allSkills.take(6).toList();
-    final backendSkills = allSkills.skip(6).take(4).toList();
-    final toolSkills = allSkills.skip(10).toList();
+    // Categorize skills manually based on user request
+    final frontendSkills = ["Flutter", "Dart"];
+    final backendSkills = ["FastAPI", "REST APIs"];
+    final languageSkills = ["Python", "SQL"];
+    final databaseSkills = ["MySQL", "PostgreSQL"];
+    final toolSkills = ["GitHub", "GitLab", "VS Code"];
 
     return Container(
       width: double.infinity,
@@ -55,6 +57,18 @@ class SkillsSection extends StatelessWidget {
             title: "Backend & Systems",
             skills: backendSkills,
             delay: 200,
+          ),
+          const SizedBox(height: 40),
+          _SkillCategory(
+            title: "Programming Languages",
+            skills: languageSkills,
+            delay: 300,
+          ),
+          const SizedBox(height: 40),
+          _SkillCategory(
+            title: "Databases",
+            skills: databaseSkills,
+            delay: 350,
           ),
           const SizedBox(height: 40),
           if (toolSkills.isNotEmpty)

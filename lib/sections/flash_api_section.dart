@@ -12,38 +12,48 @@ class FlashApiSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isDesktop = MediaQuery.of(context).size.width > 900;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = constraints.maxWidth < 600;
+        final isDesktop = constraints.maxWidth > 900;
+        final horizontalPadding = isMobile ? 20.0 : 40.0;
+        final verticalPadding = isMobile ? 40.0 : 60.0;
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 60),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          FadeInDown(
-            child: Row(
-              children: [
-                Text(
-                  "Featured Project",
-                  style: GoogleFonts.firaCode(
-                    fontSize: 20,
-                    color: AppColors.secondary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(width: 20),
-                const Expanded(
-                  child: Divider(color: AppColors.cardColor, thickness: 1),
-                ),
-              ],
-            ),
+        return Container(
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: verticalPadding,
           ),
-          const SizedBox(height: 40),
-          isDesktop
-              ? _DesktopLayout(project: AppConstants.flashApiProject)
-              : _MobileLayout(project: AppConstants.flashApiProject),
-        ],
-      ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              FadeInDown(
+                child: Row(
+                  children: [
+                    Text(
+                      "Featured Project",
+                      style: GoogleFonts.firaCode(
+                        fontSize: 20,
+                        color: AppColors.secondary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    const Expanded(
+                      child: Divider(color: AppColors.cardColor, thickness: 1),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 40),
+              isDesktop
+                  ? _DesktopLayout(project: AppConstants.flashApiProject)
+                  : _MobileLayout(project: AppConstants.flashApiProject),
+            ],
+          ),
+        );
+      },
     );
   }
 }

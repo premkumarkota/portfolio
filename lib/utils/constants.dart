@@ -46,11 +46,11 @@ class AppConstants {
       "Experienced in delivering scalable solutions across Android, iOS, Windows, Linux, and Web platforms.";
 
   static const String location = "Hyderabad, Telangana";
-  static const String email = "premkumarkota11@gmail.com";
+  static const String email = "premkumarkota1234@gmail.com";
   static const String phone = "+91 8555047334";
   static const String github = "https://github.com/premkumarkota";
   static const String linkedin =
-      "https://www.linkedin.com/in/prem-kumar-82b284186/";
+      "https://www.linkedin.com/in/prem-kumar-kota-82b284186/";
 
   static const List<String> skills = [
     "Flutter",

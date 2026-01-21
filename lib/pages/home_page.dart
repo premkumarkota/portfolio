@@ -1,4 +1,8 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:portfolio/utils/app_colors.dart';
+import 'package:portfolio/widgets/glass_container.dart';
 import 'package:portfolio/sections/about_section.dart';
 import 'package:portfolio/sections/contact_section.dart';
 import 'package:portfolio/sections/experience_section.dart';
@@ -49,55 +53,16 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      endDrawer: Drawer(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        child: Column(
-          children: [
-            const SizedBox(height: 50),
-            _DrawerItem(
-              title: "Home",
-              onTap: () {
-                Navigator.pop(context);
-                _scrollTo(_homeKey);
-              },
-            ),
-            _DrawerItem(
-              title: "About",
-              onTap: () {
-                Navigator.pop(context);
-                _scrollTo(_aboutKey);
-              },
-            ),
-            _DrawerItem(
-              title: "Skills",
-              onTap: () {
-                Navigator.pop(context);
-                _scrollTo(_skillsKey);
-              },
-            ),
-            _DrawerItem(
-              title: "Experience",
-              onTap: () {
-                Navigator.pop(context);
-                _scrollTo(_experienceKey);
-              },
-            ),
-            _DrawerItem(
-              title: "Projects",
-              onTap: () {
-                Navigator.pop(context);
-                _scrollTo(_flashApiKey);
-              },
-            ),
-            _DrawerItem(
-              title: "Contact",
-              onTap: () {
-                Navigator.pop(context);
-                _scrollTo(_contactKey);
-              },
-            ),
-          ],
-        ),
+      endDrawer: _StyledDrawer(
+        onScrollTo: _scrollTo,
+        keys: {
+          "Home": _homeKey,
+          "About": _aboutKey,
+          "Skills": _skillsKey,
+          "Experience": _experienceKey,
+          "Projects": _flashApiKey,
+          "Contact": _contactKey,
+        },
       ),
       body: Stack(
         children: [
@@ -140,16 +105,145 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class _DrawerItem extends StatelessWidget {
-  final String title;
-  final VoidCallback onTap;
-  const _DrawerItem({required this.title, required this.onTap});
+class _StyledDrawer extends StatelessWidget {
+  final Function(GlobalKey) onScrollTo;
+  final Map<String, GlobalKey> keys;
+
+  const _StyledDrawer({required this.onScrollTo, required this.keys});
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(title, style: const TextStyle(color: Colors.white)),
-      onTap: onTap,
+    return Drawer(
+      backgroundColor: Colors.transparent,
+      width: MediaQuery.of(context).size.width * 0.85,
+      child: GlassContainer(
+        borderRadius: const BorderRadius.horizontal(left: Radius.circular(30)),
+        color: AppColors.background,
+        opacity: 0.8, // Slightly more opaque to ensure contrast
+        blur: 20,
+        border: Border(
+          left: BorderSide(color: AppColors.secondary.withOpacity(0.3)),
+          top: BorderSide(color: Colors.white.withOpacity(0.1)),
+          bottom: BorderSide(color: Colors.white.withOpacity(0.1)),
+        ),
+        child: Column(
+          children: [
+            // Close Button
+            Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 50, 20, 0),
+                child: IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(
+                    Icons.close,
+                    color: AppColors.secondary,
+                    size: 30,
+                  ),
+                ),
+              ),
+            ),
+
+            // Menu Items
+            Expanded(
+              child: Center(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: keys.entries.map((entry) {
+                      int index = keys.keys.toList().indexOf(entry.key);
+                      return FadeInRight(
+                        delay: Duration(milliseconds: 100 + (index * 100)),
+                        child: _DrawerItem(
+                          number: "0${index + 1}.",
+                          title: entry.key,
+                          onTap: () {
+                            Navigator.pop(context);
+                            onScrollTo(entry.value);
+                          },
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+            ),
+
+            // Footer
+            FadeInUp(
+              delay: const Duration(milliseconds: 800),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 40),
+                child: Text(
+                  "© 2026 Prem Kumar Kota",
+                  style: GoogleFonts.firaCode(
+                    color: AppColors.textSecondary.withOpacity(0.5),
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DrawerItem extends StatefulWidget {
+  final String number;
+  final String title;
+  final VoidCallback onTap;
+
+  const _DrawerItem({
+    required this.number,
+    required this.title,
+    required this.onTap,
+  });
+
+  @override
+  State<_DrawerItem> createState() => _DrawerItemState();
+}
+
+class _DrawerItemState extends State<_DrawerItem> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: Container(
+          width: double.infinity,
+          color: Colors.transparent,
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                widget.number,
+                style: GoogleFonts.firaCode(
+                  color: AppColors.secondary,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(width: 20),
+              Text(
+                widget.title,
+                style: GoogleFonts.inter(
+                  color: _isHovered ? Colors.white : AppColors.textPrimary,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 1,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
